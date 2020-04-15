@@ -3,6 +3,7 @@ package com.example.iot_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,5 +41,6 @@ class FirebaseActivity extends AppCompatActivity {
 //            return;
 //        }
         mFirebaseAuth.signOut();
+        Toast.makeText(this, "Logged out of Firebase", Toast.LENGTH_LONG).show();
     }
 }

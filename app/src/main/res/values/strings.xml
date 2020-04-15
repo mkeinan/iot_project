@@ -11,4 +11,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="sign_in_button">Sign In button</string>
     <string name="default_web_client_id">default_web_client_id</string>
+    <string name="log_out">Log Out</string>
 </resources>

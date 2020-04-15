@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import androidx.annotation.NonNull;
@@ -130,12 +131,14 @@ public class SignInActivity extends AppCompatActivity
 
     private void handleFirebaseAuthResult(AuthResult authResult) {
         if (authResult != null) {
+            FirebaseUser user = authResult.getUser();
+            Toast.makeText(this, "Welcome " + user.getEmail(), Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Firebase Auth succeeded", Toast.LENGTH_LONG).show();
+            // goto main activity
+            Intent main = new Intent(this, MainActivity.class);
+            main.putExtra("SIGNED_IN_KEY", true);
+            startActivity(main);
+            finish();
         }
-        // goto main activity
-        Intent main = new Intent(this, MainActivity.class);
-        main.putExtra("SIGNED_IN_KEY", true);
-        startActivity(main);
-        finish();
     }
 }
