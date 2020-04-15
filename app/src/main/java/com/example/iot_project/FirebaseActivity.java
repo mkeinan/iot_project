@@ -2,6 +2,7 @@ package com.example.iot_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,5 +23,22 @@ class FirebaseActivity extends AppCompatActivity {
             finish();
             return;
         }
+    }
+
+    protected View.OnClickListener getLogoutListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logout();
+            }
+        };
+    }
+
+    private void logout() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+//        if (mFirebaseAuth == null) {
+//            return;
+//        }
+        mFirebaseAuth.signOut();
     }
 }
