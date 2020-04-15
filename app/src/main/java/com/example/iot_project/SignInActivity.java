@@ -12,6 +12,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -85,6 +86,7 @@ public class SignInActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Google Play Services Error!", Toast.LENGTH_LONG).show();
+        // Crashlytics.logException(new IllegalStateException("Problem with Google Play services"));
     }
 
     @Override
@@ -96,6 +98,9 @@ public class SignInActivity extends AppCompatActivity
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
+            } else {
+                // Crashlytics.logException(new IllegalStateException("Google sign in failed"));
+                Toast.makeText(getApplicationContext(), "Google sign in failed", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -103,11 +108,21 @@ public class SignInActivity extends AppCompatActivity
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Crashlytics.logException(new IllegalStateException("Firebase auth failed" +e.getMessage()));
+                        Toast.makeText(getApplicationContext(), "Firebase Auth failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                })
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             handleFirebaseAuthResult(task.getResult());
+                        } else {
+                            // Crashlytics.logException(new IllegalStateException("Problem with Firebase auth"));
+                            Toast.makeText(getApplicationContext(), "Problem with Firebase Auth", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
