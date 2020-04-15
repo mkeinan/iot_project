@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "461046321189",
+    "firebase_url": "https://arduinoautonomiccar.firebaseio.com",
+    "project_id": "arduinoautonomiccar",
+    "storage_bucket": "arduinoautonomiccar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461046321189:android:a1d025c66f8c83dc06afcc",
+        "android_client_info": {
+          "package_name": "com.example.iot_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461046321189-vd895udevt86od7hgu01qliec015eac6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.iot_project",
+            "certificate_hash": "49793e9bf6edab7d7b6eb68d41465840c736be28"
+          }
+        },
+        {
+          "client_id": "461046321189-a7883tmmba2u3kssue8re89m6msjlgql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUCWoWignog_ZJCz7-wJ0F4C1uOg9q_Dc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461046321189-a7883tmmba2u3kssue8re89m6msjlgql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
