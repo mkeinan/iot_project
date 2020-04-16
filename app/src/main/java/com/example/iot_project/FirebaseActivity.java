@@ -42,5 +42,11 @@ class FirebaseActivity extends AppCompatActivity {
 //        }
         mFirebaseAuth.signOut();
         Toast.makeText(this, "Logged out of Firebase", Toast.LENGTH_LONG).show();
+
+        // how should I return to the main activity after log out?
+        Intent main = new Intent(this, MainActivity.class);
+//        main.putExtra("SIGNED_IN_KEY", true);
+        startActivity(main);
+        finish();
     }
 }
