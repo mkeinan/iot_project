@@ -127,7 +127,12 @@ public class AlgorithmActivity extends AppCompatActivity {
             }
         }
         tryAlgorithmGraph = new Graph(rowsNum, colsNum, mapDescription);
-        algorithmMapText.setText(tryAlgorithmGraph.PrintGraph());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                algorithmMapText.setText(tryAlgorithmGraph.PrintGraph());
+            }
+        });
     }
 
 
@@ -183,7 +188,7 @@ public class AlgorithmActivity extends AppCompatActivity {
         void CreateAdjacencies() {
             for (int i = 0; i < rows; ++i) {
                 for (int j = 0; j < columns; j++) {
-                    if (data[i][j] != "X") {
+                    if (!data[i][j].equals("X")) {
                         CreateAdjacencies(i, j);
                     }
                 }
@@ -202,7 +207,7 @@ public class AlgorithmActivity extends AppCompatActivity {
             if (wx < 0 || wx >= rows || wy < 0 || wy >= columns) {
                 return;
             }
-            if (data[vx][vy] != "X" && data[wx][wy] != "X") {
+            if (!data[vx][vy].equals("X") && !data[wx][wy].equals("X")) {
                 adj[vx * columns + vy].add(wx * columns + wy);
             }
         }
