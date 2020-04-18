@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +26,12 @@ public class GetMapActivity extends AppCompatActivity {
 
     Button getMapButton;
     Button goBackToMainButton;
+    Button goToAlgorithmButton;
     TextView mapText;
     FirebaseFirestore db;
     private int nextMap = 0;
     private DocumentSnapshot mDocSnap = null;
+    public static DocumentSnapshot mPublicDocSnap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class GetMapActivity extends AppCompatActivity {
     private void initUI() {
         getMapButton = (Button) findViewById(R.id.button2);
         goBackToMainButton = (Button) findViewById(R.id.button3);
+        goToAlgorithmButton = (Button) findViewById(R.id.goto_try_algorithm_button);
         mapText = findViewById(R.id.map_text);
 
         goBackToMainButton.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +62,16 @@ public class GetMapActivity extends AppCompatActivity {
                 getSomeMap();
             }
         });
+
+        goToAlgorithmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent algorithmIntent = new Intent(getApplicationContext(), AlgorithmActivity.class);
+                algorithmIntent.putExtra("mapDocSnap", (Serializable) mDocSnap);
+                startActivity(algorithmIntent);
+                finish();
+            }
+        });
     }
 
     private void getSomeMap() {
@@ -71,6 +85,7 @@ public class GetMapActivity extends AppCompatActivity {
                                 Log.d("-D-", document.getId() + " => " + document.getData());
                             }
                             mDocSnap = task.getResult().getDocuments().get(nextMap % task.getResult().size());
+                            mPublicDocSnap = mDocSnap;
                             nextMap++;
                             List<String> curMapRows = (List<String>) mDocSnap.get("rows");
                             StringBuilder curMapText = new StringBuilder();
