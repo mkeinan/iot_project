@@ -61,7 +61,7 @@ public class SignInActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Hello there! Please sign in so we know it's you :)", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

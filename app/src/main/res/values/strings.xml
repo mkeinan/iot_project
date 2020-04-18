@@ -7,8 +7,14 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_first_fragment">Powered by Firebase 🔥</string>
+    <string name="hello_second_fragment">© Credits: Technion CS - 236333 - IOT PROJECT</string>
     <string name="sign_in_button">Sign In button</string>
     <string name="log_out">Log Out</string>
+    <string name="please_sign_in">Please Sign In</string>
+    <string name="next_message">next_message</string>
+    <string name="welcome_to_arduino_autonomic_car_project">Welcome to Arduino Autonomic Car project!</string>
+    <string name="about_project">About Project</string>
+    <string name="back_to_main">Back to Main</string>
+    <string name="try_an_algorithm">Try an Algorithm</string>
 </resources>

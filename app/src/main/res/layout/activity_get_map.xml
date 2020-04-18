@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,31 +11,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Get A Map"
-        tools:layout_above="@id/map_text"
-        android:layout_centerHorizontal="true"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.5"
+        />
 
     <TextView
         android:id="@+id/map_text"
-        android:layout_width="197dp"
-        android:layout_height="339dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="No map is loaded..."
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.5"
+        />
 
     <Button
         android:id="@+id/button3"
+        android:text="@string/back_to_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/goto_try_algorithm_button"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="40dp"
-        android:text="Back to Main" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.1"
+        />
 
     <Button
         android:id="@+id/goto_try_algorithm_button"
+        android:text="@string/try_an_algorithm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/map_text"
-        android:layout_centerHorizontal="true"
-        android:text="Try an Algorithm" />
-</RelativeLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintHorizontal_bias="0.5"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
