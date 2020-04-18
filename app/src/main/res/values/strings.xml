@@ -17,4 +17,6 @@
     <string name="about_project">About Project</string>
     <string name="back_to_main">Back to Main</string>
     <string name="try_an_algorithm">Try an Algorithm</string>
+    <string name="ok">OK</string>
+    <string name="cancel">cancel</string>
 </resources>

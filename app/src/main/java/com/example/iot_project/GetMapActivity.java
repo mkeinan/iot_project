@@ -2,6 +2,8 @@ package com.example.iot_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -271,8 +273,42 @@ public class GetMapActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    // Thread finished run, ask whether to upload results to cloud:
+                    createDialogUploadResultToCloud();
                 }
             }.start();
+
         }
+    }
+
+    private void createDialogUploadResultToCloud(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                Toast.makeText(getApplicationContext(),
+                        "You make the world a better place ❤", Toast.LENGTH_LONG).show();
+                uploadCurrentResultToCloud();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                Toast.makeText(getApplicationContext(),
+                        "You have decided not to help in the fight against car accidents...", Toast.LENGTH_LONG).show();
+            }
+        });
+        // Set other dialog properties
+        builder.setMessage("Algorithm Simulation Finished");
+        builder.setMessage("Can we upload your result to the cloud?");
+
+        // Create the AlertDialog
+        AlertDialog dialog = builder.create();
+    }
+
+    private void uploadCurrentResultToCloud() {
+        Toast.makeText(getApplicationContext(),
+                "PLEASE CHANGE ME SO I'LL UPLOAD THE RESULT", Toast.LENGTH_LONG).show();
     }
 }
