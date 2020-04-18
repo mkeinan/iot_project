@@ -29,7 +29,7 @@ public class GetMapActivity extends AppCompatActivity {
     Button goToAlgorithmButton;
     TextView mapText;
     FirebaseFirestore db;
-    private int nextMap = 0;
+    private Integer nextMap = -1;
     private DocumentSnapshot mDocSnap = null;
     public static DocumentSnapshot mPublicDocSnap = null;
 
@@ -85,9 +85,9 @@ public class GetMapActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("-D-", document.getId() + " => " + document.getData());
                             }
+                            nextMap++;
                             mDocSnap = task.getResult().getDocuments().get(nextMap % task.getResult().size());
                             mPublicDocSnap = mDocSnap;
-                            nextMap++;
                             List<String> curMapRows = (List<String>) mDocSnap.get("rows");
                             StringBuilder curMapText = new StringBuilder();
                             assert curMapRows != null;

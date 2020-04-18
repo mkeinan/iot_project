@@ -55,7 +55,7 @@ public class AlgorithmActivity extends AppCompatActivity {
             } else {
                 Log.w("-D-", "Note - extras is not null");
 //                newString= extras.getString("STRING_I_NEED");
-                map_index = extras.getInt("mapDocSnap");
+                map_index = extras.getInt("MAP_INDEX");
                 Log.w("-D-", "received via extras: " + map_index.toString());
                 getRequestedMap();
             }
@@ -245,6 +245,14 @@ public class AlgorithmActivity extends AppCompatActivity {
                     visited[s] = true;
                     data[x][y] = "S";
                     queue.add(s);
+
+                    // update the location of start (for edge case of no neighbors...):
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            algorithmMapText.setText(tryAlgorithmGraph.PrintGraph());
+                        }
+                    });
 
                     while (queue.size() != 0) {
                         // Dequeue a vertex from queue and print it
