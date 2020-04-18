@@ -101,7 +101,7 @@ public class SignInActivity extends AppCompatActivity
                 firebaseAuthWithGoogle(account);
             } else {
                 // Crashlytics.logException(new IllegalStateException("Google sign in failed"));
-                Toast.makeText(getApplicationContext(), "Google sign in failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Google sign in failed (maybe no internet..?)", Toast.LENGTH_LONG).show();
             }
         }
     }

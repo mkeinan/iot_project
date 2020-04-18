@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GetMapActivity">
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get A Map"
+        tools:layout_above="@id/map_text"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/map_text"
+        android:layout_width="197dp"
+        android:layout_height="339dp"
+        android:text="No map is loaded..."
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Main"
+        android:layout_below="@id/map_text"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
