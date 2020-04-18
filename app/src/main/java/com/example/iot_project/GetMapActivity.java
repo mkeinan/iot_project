@@ -67,7 +67,8 @@ public class GetMapActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent algorithmIntent = new Intent(getApplicationContext(), AlgorithmActivity.class);
-                algorithmIntent.putExtra("mapDocSnap", (Serializable) mDocSnap);
+//                algorithmIntent.putExtra("mapDocSnap", (Serializable) mDocSnap);
+                algorithmIntent.putExtra("MAP_INDEX", nextMap);
                 startActivity(algorithmIntent);
                 finish();
             }

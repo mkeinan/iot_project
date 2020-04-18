@@ -2,8 +2,12 @@ package com.example.iot_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,6 +33,7 @@ public class AlgorithmActivity extends AppCompatActivity {
     FirebaseFirestore db;
 //    private DocumentSnapshot mDocSnap = GetMapActivity.mPublicDocSnap;
     private DocumentSnapshot mDocSnap = null;
+    Integer map_index = 0;
 
     Button runAlgorithmButton;
     Button goBackToGetMapButton;
@@ -49,12 +54,36 @@ public class AlgorithmActivity extends AppCompatActivity {
                 Log.w("-E-", "Error - extras is null");
             } else {
                 Log.w("-D-", "Note - extras is not null");
-                mDocSnap = (DocumentSnapshot) savedInstanceState.getSerializable("mapDocSnap");
+//                newString= extras.getString("STRING_I_NEED");
+                map_index = extras.getInt("mapDocSnap");
+                Log.w("-D-", "received via extras: " + map_index.toString());
+                getRequestedMap();
             }
         } else {
             Log.w("-D-", "Note - savedInstanceState is not null");
-            mDocSnap = (DocumentSnapshot) savedInstanceState.getSerializable("mapDocSnap");
+            map_index = (Integer) savedInstanceState.getSerializable("MAP_INDEX");
+            Log.w("-D-", "received via savedInstanceState: " + map_index.toString());
+            getRequestedMap();
         }
+    }
+
+    private void getRequestedMap() {
+        db.collection("maps")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("-D-", document.getId() + " => " + document.getData());
+                            }
+                            mDocSnap = task.getResult().getDocuments().get(map_index % task.getResult().size());
+                            initGraph(mDocSnap);
+                        } else {
+                            Log.w("-D-", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     private void initUI() {
@@ -98,6 +127,7 @@ public class AlgorithmActivity extends AppCompatActivity {
             }
         }
         tryAlgorithmGraph = new Graph(rowsNum, colsNum, mapDescription);
+        algorithmMapText.setText(tryAlgorithmGraph.PrintGraph());
     }
 
 
