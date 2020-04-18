@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "461046321189-irohokvcpkgh3qskfq6e5d94gfuti8k4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.iot_project",
+            "certificate_hash": "384ca41a698b2b086747f4d3f5319523075ad9f7"
+          }
+        },
+        {
           "client_id": "461046321189-vd895udevt86od7hgu01qliec015eac6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
