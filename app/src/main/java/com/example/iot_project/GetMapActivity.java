@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,10 +27,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GetMapActivity extends AppCompatActivity {
@@ -111,6 +115,24 @@ public class GetMapActivity extends AppCompatActivity {
         });
     }
 
+    private Map<String, Object> graphToDocument(Graph graph){
+        Map<String, Object> mapMap = new HashMap<>();
+        mapMap.put("height", graph.getRows());
+        mapMap.put("width", graph.getColumns());
+        ArrayList<String> rows = new ArrayList<>();
+        String[][] matrix = graph.getData();
+
+        for (int i = 0; i < graph.getRows(); i++) {
+            StringBuilder curRow = new StringBuilder();
+            for (int j = 0; j < graph.getColumns(); j++) {
+                curRow.append(matrix[i][j]);
+            }
+            rows.add(curRow.toString());
+        }
+        mapMap.put("rows", rows);
+        return mapMap;
+    }
+
     private void getSomeMap() {
         db.collection("maps")
                 .get()
@@ -145,6 +167,17 @@ public class GetMapActivity extends AppCompatActivity {
         private String data[][];
         private Dictionary<Integer, Pair<Integer,Integer>> numberToCordMap;
 
+        public int getRows() {
+            return rows;
+        }
+
+        public int getColumns() {
+            return columns;
+        }
+
+        public String[][] getData() {
+            return data;
+        }
 
         // Constructor
         Graph(int w, int h) {
@@ -274,15 +307,19 @@ public class GetMapActivity extends AppCompatActivity {
                         }
                     }
                     // Thread finished run, ask whether to upload results to cloud:
-                    createDialogUploadResultToCloud();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            createDialogUploadResultToCloud();
+                        }
+                    });
                 }
             }.start();
-
         }
     }
 
     private void createDialogUploadResultToCloud(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(GetMapActivity.this);
         // Add the buttons
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -305,10 +342,26 @@ public class GetMapActivity extends AppCompatActivity {
 
         // Create the AlertDialog
         AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void uploadCurrentResultToCloud() {
-        Toast.makeText(getApplicationContext(),
-                "PLEASE CHANGE ME SO I'LL UPLOAD THE RESULT", Toast.LENGTH_LONG).show();
+        Map<String, Object> mapAsMap = graphToDocument(this.tryAlgorithmGraph);
+        db.collection("results")
+                .add(mapAsMap)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("-I-", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        Toast.makeText(getApplicationContext(),
+                                "Your result was uploaded successfully", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("-E-", "Error occurred. Result upload failed", e);
+                    }
+                });
     }
 }
