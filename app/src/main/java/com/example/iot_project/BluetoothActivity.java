@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+
+import java.nio.charset.StandardCharsets;
 
 import com.example.iot_project.MyBluetoothService.ConnectedThread;
 
@@ -53,6 +57,8 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
 
     ConnectedThread connectedThread;
     ConnectThread connectThread;
+
+    Integer receivedMessagesCount = 0;
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -123,19 +129,32 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
     @Override
     public boolean handleMessage(@NonNull Message msg){
         if (msg.what == MessageConstants.MESSAGE_READ){
+            receivedMessagesCount++;
+            Toast.makeText(getApplicationContext(), "handleMessage(): received message number " + receivedMessagesCount, Toast.LENGTH_SHORT).show();
             Log.w("-D-", "BluetoothActivity.handleMessage(): reading");
-            byte[] buf = (byte[]) msg.obj;
-            Log.w("-D-", "BluetoothActivity.handleMessage(): " + Arrays.toString(buf));
-            receivedMessageText.setText(Arrays.toString(buf));
+            byte[] buff = (byte[]) msg.obj;
+            String receivedMsg;
+            try {
+                receivedMsg = new String(buff, "ISO-8859-1");
+            } catch (UnsupportedEncodingException e){
+                Log.e("-E-", "BluetoothActivity.handleMessage(): ERROR: ", e);
+                return false;
+            }
+//            String receivedMsg = Base64.encodeToString(buff, false);;
+            Log.w("-D-", "BluetoothActivity.handleMessage(): " + receivedMsg);
+            receivedMessageText.setText(receivedMsg);
+            return true;
         }
         if (msg.what == MessageConstants.MESSAGE_WRITE){
             Log.w("-D-", "BluetoothActivity.handleMessage(): writing");
-            Log.w("-D-", "BluetoothActivity.handleMessage(): " + sendMessageText.toString());
+            Log.w("-D-", "BluetoothActivity.handleMessage(): " + sendMessageText.getText().toString());
+            return true;
         }
         if (msg.what == MessageConstants.MESSAGE_TOAST){
             Log.w("-D-", "BluetoothActivity.handleMessage(): toasting");
             Bundle bundle = msg.getData();
             Toast.makeText(getApplicationContext(), "handleMessage(): " + bundle.getString("toast"), Toast.LENGTH_LONG).show();
+            return true;
         }
         return false;
     }
