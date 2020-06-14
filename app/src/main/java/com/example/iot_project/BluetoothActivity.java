@@ -43,7 +43,8 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> pairedDevices;
     private final static int REQUEST_ENABLE_BT = 1;
-    UUID my_uuid = UUID.randomUUID();
+//    UUID my_uuid = UUID.randomUUID();
+    UUID my_uuid;
 //    MyBluetoothService myBluetoothService;
     BluetoothDevice chosenDevice = null;
 
@@ -155,7 +156,7 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             return;
         }
         connectThread = new ConnectThread(chosenDevice);
-        connectThread.run();
+        connectThread.start();
         Log.w("-D-", "BluetoothActivity.initializeConnection(): spawned connectThread ");
     }
 
@@ -176,7 +177,9 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             Toast.makeText(getApplicationContext(), "connectedThread is null", Toast.LENGTH_LONG).show();
             return;
         }
-        connectedThread.write(sendMessageText.getText().toString().getBytes());
+        String myMsg = sendMessageText.getText().toString();
+        connectedThread.write(myMsg.getBytes());
+        Toast.makeText(getApplicationContext(), "sending message: " + myMsg, Toast.LENGTH_LONG).show();
     }
 
     public void checkBluetoothSupport(){
@@ -251,9 +254,9 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
 
     private void manageMyConnectedSocket(BluetoothSocket socket) {
         Log.e("-D-", "BluetoothActivity.manageMyConnectedSocket(): beginning...");
-        Toast.makeText(getApplicationContext(), "BluetoothActivity.manageMyConnectedSocket(): beginning...", Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "BluetoothActivity.manageMyConnectedSocket(): beginning...", Toast.LENGTH_LONG).show();
         connectedThread = new ConnectedThread(socket);
-        connectedThread.run();
+        connectedThread.start();
         Log.e("-D-", "BluetoothActivity.manageMyConnectedSocket(): spawned connectedThread");
     }
 
@@ -337,38 +340,39 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.
+                my_uuid = mmDevice.getUuids()[0].getUuid();
                 tmp = device.createRfcommSocketToServiceRecord(my_uuid);
             } catch (IOException e) {
                 Log.e("-D-", "ConnectThread(): Socket's create() method failed");
-                Toast.makeText(getApplicationContext(), "ConnectThread(): Socket's create() method failed", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "ConnectThread(): Socket's create() method failed", Toast.LENGTH_LONG).show();
             }
             mmSocket = tmp;
         }
 
         public void run() {
             Log.e("-D-", "ConnectThread: run() - starting...");
-            Toast.makeText(getApplicationContext(), "ConnectThread: run() - starting...", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "ConnectThread: run() - starting...", Toast.LENGTH_LONG).show();
 
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
 
             Log.e("-D-", "ConnectThread: canceled discovery");
-            Toast.makeText(getApplicationContext(), "ConnectThread: canceled discovery", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "ConnectThread: canceled discovery", Toast.LENGTH_LONG).show();
             try {
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 mmSocket.connect();
                 Log.e("-D-", "ConnectThread: mmSocket.connect() seem to succeed..");
-                Toast.makeText(getApplicationContext(), "ConnectThread: mmSocket.connect() seem to succeed..", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "ConnectThread: mmSocket.connect() seem to succeed..", Toast.LENGTH_LONG).show();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and return.
                 try {
-                    Toast.makeText(getApplicationContext(), "ConnectThread: Unable to connect; close the socket and return", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "ConnectThread: Unable to connect; close the socket and return", Toast.LENGTH_LONG).show();
                     Log.e("-E-", "ConnectThread: Unable to connect; close the socket and return. " + connectException.getMessage());
                     mmSocket.close();
                 } catch (IOException closeException) {
                     Log.e("-E-", "ConnectThread: Could not close the client socket");
-                    Toast.makeText(getApplicationContext(), "ConnectThread: Could not close the client socket", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "ConnectThread: Could not close the client socket", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -417,13 +421,13 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             try {
                 tmpIn = socket.getInputStream();
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "ConnectedThread(): Error occurred when creating input stream", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "ConnectedThread(): Error occurred when creating input stream", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error occurred when creating input stream", e);
             }
             try {
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "ConnectedThread(): Error occurred when creating output stream", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "ConnectedThread(): Error occurred when creating output stream", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error occurred when creating output stream", e);
             }
             mmInStream = tmpIn;
@@ -432,7 +436,7 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
 
         public void run() {
             Log.e("-D-", "ConnectedThread(): run() - starting..");
-            Toast.makeText(getApplicationContext(), "ConnectedThread(): run() - starting..", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "ConnectedThread(): run() - starting..", Toast.LENGTH_LONG).show();
             mmBuffer = new byte[1024];
             int numBytes; // bytes returned from read()
 
