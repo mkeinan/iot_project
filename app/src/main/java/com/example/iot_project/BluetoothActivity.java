@@ -1,30 +1,45 @@
 package com.example.iot_project;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
-import com.example.iot_project.MyBluetoothService;
+import com.example.iot_project.MyBluetoothService.ConnectedThread;
 
 public class BluetoothActivity extends AppCompatActivity {
+    Button goBackButton;
+    Button sendButton;
+    Button scanButton;
+    TextView receivedMessageText;
+    EditText sendMessageText;
+
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> pairedDevices;
     private final static int REQUEST_ENABLE_BT = 1;
     UUID my_uuid = UUID.randomUUID();
+    MyBluetoothService myBluetoothService;
+    BluetoothDevice chosenDevice = null;
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -36,6 +51,8 @@ public class BluetoothActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
+                Log.d("-D-", "BroadcastReceiver: received  deviceName = " + deviceName
+                        + " deviceHardwareAddress = " + deviceHardwareAddress);
             }
         }
     };
@@ -61,6 +78,65 @@ public class BluetoothActivity extends AppCompatActivity {
 
     private void InitUI() {
         Log.w("-D-", "BluetoothActivity.InitUI(): initializing UI");
+        goBackButton = (Button) findViewById(R.id.go_back_button);
+        sendButton = (Button) findViewById(R.id.send_button);
+        scanButton = (Button) findViewById(R.id.scan_button);
+        receivedMessageText = findViewById(R.id.received_msg_text);
+        sendMessageText = findViewById(R.id.send_msg_text);
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainIntent);
+                finish();
+            }
+        });
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bluetoothScanAndChoose();
+            }
+        });
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
+
+    }
+
+    public void bluetoothScanAndChoose(){
+        checkBluetoothSupport();
+        checkBluetoothEnabled();
+        checkPairedDevices();
+        chooseDevice();
+        initializeConnection();
+    }
+
+    public void initializeConnection(){
+        if (chosenDevice == null){
+            Log.w("-D-", "BluetoothActivity.sendMessage(): must choose a target device by pressing 'scan' ");
+            Toast.makeText(getApplicationContext(), "must choose a target device by pressing 'scan'", Toast.LENGTH_LONG).show();
+            return;
+        }
+        ConnectedThread = new ConnectedThread();
+    }
+
+    public void sendMessage(){
+        if (bluetoothAdapter == null){
+            Log.w("-D-", "BluetoothActivity.sendMessage(): must enable bluetooth by pressing 'scan' ");
+            Toast.makeText(getApplicationContext(), "must enable bluetooth by pressing 'scan'", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (chosenDevice == null){
+            Log.w("-D-", "BluetoothActivity.sendMessage(): must choose a target device by pressing 'scan' ");
+            Toast.makeText(getApplicationContext(), "must choose a target device by pressing 'scan'", Toast.LENGTH_LONG).show();
+            return;
+        }
+
     }
 
     public void checkBluetoothSupport(){
@@ -82,6 +158,40 @@ public class BluetoothActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Your Bluetooth is enabled. Yay!", Toast.LENGTH_LONG).show();
     }
 
+    public void chooseDevice(){
+        ArrayList<String> deviceInfoList = new ArrayList<>();
+        for (BluetoothDevice device : pairedDevices) {
+            deviceInfoList.add(device.getAddress());
+        }
+        deviceInfoList.add("None");
+
+        final String[] options = (String[]) deviceInfoList.toArray();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick a bluetooth device");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.w("-D-", "BluetoothActivity.chooseDevice(): user clicked option " + which);
+                // the user clicked on options[which]
+                if (options[which].equals("None")) {
+                    Log.w("-D-", "BluetoothActivity.chooseDevice(): No device was chosen");
+                    Toast.makeText(getApplicationContext(), "No device was chosen", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    for (BluetoothDevice device : pairedDevices) {
+                        if (options[which].equals(device.getAddress())){
+                            chosenDevice = device;
+                            Log.w("-D-", "BluetoothActivity.chooseDevice(): chosen " + device.toString());
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+        builder.show();
+    }
+
     public void checkPairedDevices(){
         pairedDevices = bluetoothAdapter.getBondedDevices();
         for (BluetoothDevice device : pairedDevices) {
@@ -99,8 +209,10 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     private void manageMyConnectedSocket(BluetoothSocket socket) {
+
     }
 
+    /*
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
 
@@ -205,5 +317,6 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+     */
 
 }

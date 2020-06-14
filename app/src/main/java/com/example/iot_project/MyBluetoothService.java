@@ -24,7 +24,7 @@ public class MyBluetoothService {
         // ... (Add other message types here as needed.)
     }
 
-    private class ConnectedThread extends Thread {
+    public class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
