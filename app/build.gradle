@@ -47,3 +47,4 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'  // required to integrate Firebase
+
