@@ -26,5 +26,15 @@ public class MainActivity extends FirebaseActivity {
                 finish();
             }
         });
+
+        Button goToBluetoothTerminal = (Button) findViewById(R.id.bluetooth_terminal_button);
+        goToBluetoothTerminal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent bluetoothTerminalIntent = new Intent(getApplicationContext(), BluetoothActivity.class);
+                startActivity(bluetoothTerminalIntent);
+                finish();
+            }
+        });
     }
 }
