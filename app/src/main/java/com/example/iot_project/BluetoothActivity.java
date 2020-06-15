@@ -59,6 +59,7 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
     ConnectThread connectThread;
 
     Integer receivedMessagesCount = 0;
+    StringBuilder incomingMessage = new StringBuilder();
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -130,19 +131,22 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
     public boolean handleMessage(@NonNull Message msg){
         if (msg.what == MessageConstants.MESSAGE_READ){
             receivedMessagesCount++;
-            Toast.makeText(getApplicationContext(), "handleMessage(): received message number " + receivedMessagesCount, Toast.LENGTH_SHORT).show();
-            Log.w("-D-", "BluetoothActivity.handleMessage(): reading");
+//            Toast.makeText(getApplicationContext(), "handleMessage(): received chunk number " + receivedMessagesCount, Toast.LENGTH_SHORT).show();
+            Log.w("-D-", "BluetoothActivity.handleMessage(): received chunk number " + receivedMessagesCount);
+            int chunkSize = msg.arg1;
+            Log.w("-D-", "BluetoothActivity.handleMessage(): reading chunk of size " + chunkSize);
             byte[] buff = (byte[]) msg.obj;
             String receivedMsg;
             try {
-                receivedMsg = new String(buff, "ISO-8859-1");
+                receivedMsg = new String(buff, 0, chunkSize, "ISO-8859-1");
             } catch (UnsupportedEncodingException e){
                 Log.e("-E-", "BluetoothActivity.handleMessage(): ERROR: ", e);
                 return false;
             }
 //            String receivedMsg = Base64.encodeToString(buff, false);;
             Log.w("-D-", "BluetoothActivity.handleMessage(): " + receivedMsg);
-            receivedMessageText.setText(receivedMsg);
+            incomingMessage.append(receivedMsg);  // since the message is received in chunks, we append..
+            receivedMessageText.setText(incomingMessage.toString());  // updates the incoming text on screen
             return true;
         }
         if (msg.what == MessageConstants.MESSAGE_WRITE){
@@ -196,9 +200,10 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             Toast.makeText(getApplicationContext(), "connectedThread is null", Toast.LENGTH_LONG).show();
             return;
         }
+        incomingMessage = new StringBuilder();  // "zero-out" the incoming message to be ready for the feedback
         String myMsg = sendMessageText.getText().toString();
         connectedThread.write(myMsg.getBytes());
-        Toast.makeText(getApplicationContext(), "sending message: " + myMsg, Toast.LENGTH_LONG).show();
+        Log.w("-D-", "BluetoothActivity.sendMessage(): sending message: " + myMsg);
     }
 
     public void checkBluetoothSupport(){
@@ -462,12 +467,15 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
                 try {
+                    // zero the buffer before trying to read into it again!
+                    Arrays.fill(mmBuffer, (byte)0);
+
                     // Read from the InputStream.
-                    numBytes = mmInStream.read(mmBuffer);
+                    numBytes = mmInStream.read(mmBuffer);  // this read command is BLOCKING the thread until there's something in the buffer!
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = handler.obtainMessage(
                             MessageConstants.MESSAGE_READ, numBytes, -1,
-                            mmBuffer);
+                            mmBuffer.clone());  // send a clone to not interfere with the original buffer
                     readMsg.sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "Input stream was disconnected", e);
