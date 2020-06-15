@@ -296,60 +296,6 @@ public class BluetoothActivity extends AppCompatActivity implements Handler.Call
         }
     }
 
-    /*
-    private class AcceptThread extends Thread {
-        private final BluetoothServerSocket mmServerSocket;
-
-        public AcceptThread() {
-            // Use a temporary object that is later assigned to mmServerSocket
-            // because mmServerSocket is final.
-            BluetoothServerSocket tmp = null;
-            try {
-                // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("AutonomicIOTproject", my_uuid);
-            } catch (IOException e) {
-                Log.e("-D-", "Socket's listen() method failed", e);
-            }
-            mmServerSocket = tmp;
-        }
-
-        public void run(){
-            BluetoothSocket socket = null;
-            // Keep listening until exception occurs or a socket is returned.
-            while (true) {
-                try {
-                    socket = mmServerSocket.accept();
-                } catch (IOException e) {
-                    Log.e("-D-", "Socket's accept() method failed", e);
-                    break;
-                }
-
-                if (socket != null) {
-                    // A connection was accepted. Perform work associated with
-                    // the connection in a separate thread.
-                    manageMyConnectedSocket(socket);
-                    try {
-                        mmServerSocket.close();
-                    } catch (IOException e){
-                        Log.e("-D-", "AcceptThread.run(): IOException occurred", e);
-                    }
-                    break;
-                }
-            }
-        }
-
-        // Closes the connect socket and causes the thread to finish.
-        public void cancel() {
-            try {
-                mmServerSocket.close();
-            } catch (IOException e) {
-                Log.e("-D-", "Could not close the connect socket", e);
-            }
-        }
-    }
-
-    */
-
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
