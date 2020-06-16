@@ -221,6 +221,7 @@ public class Graph {
     }
 
     private void MoveToTarget(Integer x_target, Integer y_target) {
+        Log.w("-D-", "Graph.MoveToTarget(): moving to (" + x_target + ", " + y_target + ")");
         CalculateMoveList(x_target, y_target);
         int prev_x = 0, prev_y = 0;
         List<Pair<Integer, Integer>> moveList = StaticVars.backtrackMinSol;

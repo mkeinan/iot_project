@@ -131,11 +131,12 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
     public void updateMap(){
         Log.w("-D-", "SimulationActivity.updateMap(): updating map's text");
-        mapText.setText(myWrapper.graph.PrintGraph());
+        mapText.setText(StaticVars.grid);
     }
 
     public void runSimulation(){
         Log.w("-D-", "SimulationActivity.runSimulation(): starting");
+        myWrapper = new Wrapper(myRobot);  // to allow multiple clicks on "run" (should we?)
         myWrapper.start();
         Log.w("-D-", "SimulationActivity.runSimulation(): Wrapper launched");
     }

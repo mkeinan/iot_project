@@ -15,6 +15,7 @@ import com.example.iot_project.StaticVars;
 public class CreateMapActivity extends AppCompatActivity {
 
     Button continueButton;
+    Button defaultButton;
     EditText numRowsText;
     EditText numColsText;
 
@@ -28,6 +29,7 @@ public class CreateMapActivity extends AppCompatActivity {
     private void InitUI() {
         Log.w("-D-", "CreateMapActivity.InitUI(): initializing UI");
         continueButton = (Button) findViewById(R.id.button_create_map_continue);
+        defaultButton = (Button) findViewById(R.id.button_default_rows_cols);
         numRowsText = (EditText) findViewById(R.id.choose_num_rows);
         numColsText = (EditText) findViewById(R.id.choose_num_cols);
 
@@ -41,6 +43,13 @@ public class CreateMapActivity extends AppCompatActivity {
                 Intent chooseParamsIntent = new Intent(getApplicationContext(), ChooseParamsActivity.class);
                 startActivity(chooseParamsIntent);
                 finish();
+            }
+        });
+
+        defaultButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDefaultValues();
             }
         });
     }
@@ -60,5 +69,10 @@ public class CreateMapActivity extends AppCompatActivity {
             }
         }
         StaticVars.grid = new Graph(StaticVars.numRows,  StaticVars.numCols, mapDescription, null).PrintGraph();
+    }
+
+    private void setDefaultValues(){
+        numRowsText.setText("5");
+        numColsText.setText("5");
     }
 }
