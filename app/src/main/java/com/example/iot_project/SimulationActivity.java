@@ -289,13 +289,19 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
     private void manageMyConnectedSocket(BluetoothSocket socket) {
         Log.e("-D-", "SimulationActivity.manageMyConnectedSocket(): beginning...");
-//        Toast.makeText(getApplicationContext(), "SimulationActivity.manageMyConnectedSocket(): beginning...", Toast.LENGTH_LONG).show();
         connectedThread = new SimulationActivity.ConnectedThread(socket);
         connectedThread.start();
         Log.e("-D-", "SimulationActivity.manageMyConnectedSocket(): spawned connectedThread");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Bluetooth connection established", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void terminateSocketConnection(){
+        Toast.makeText(getApplicationContext(), "terminating Bluetooth connection", Toast.LENGTH_SHORT).show();
         Log.w("-D-", "SimulationActivity.terminateSocketConnection(): starting");
         if (connectThread != null) {
             Log.w("-D-", "SimulationActivity.manageMyConnectedSocket(): terminating connectThread");

@@ -56,9 +56,9 @@ public class CreateMapActivity extends AppCompatActivity {
 
     private void storeMap() {
         String numRowsStr = numRowsText.getText().toString();
-        String numColsStr = numRowsText.getText().toString();
+        String numColsStr = numColsText.getText().toString();
         int numRows = Integer.parseInt(numRowsStr);
-        int numCols = Integer.parseInt(numRowsStr);
+        int numCols = Integer.parseInt(numColsStr);
         StaticVars.numRows = numRows;
         StaticVars.numCols = numCols;
 
