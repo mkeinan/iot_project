@@ -1,5 +1,8 @@
 package com.example.iot_project;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.util.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,6 +15,9 @@ public class Graph {
     private LinkedList<Integer>[] adj; //Adjacency Lists
     private String[][]data;
     private Dictionary<Integer, Pair<Integer,Integer>> numberToCordMap;
+
+    private Handler myHandler;
+    public boolean should_wait = false;
 
     public int getRows() {
         return rows;
@@ -36,8 +42,9 @@ public class Graph {
         return res;
     }
 
-    public Graph(int columns, int rows, String[][] data)
+    public Graph(int columns, int rows, String[][] data, Handler handler)
     {
+        this.myHandler = handler;
         this.obstacleHandle = false;
         this.columns = columns;
         this.rows = rows;
@@ -225,13 +232,21 @@ public class Graph {
             }
             prev_x = StaticVars.curRow;
             prev_y = StaticVars.curCol;
-//            if (item.first>StaticVars.curRow && item.second == StaticVars.curCol)
             if (item.first>StaticVars.curRow && item.second == StaticVars.curCol)
             {
                 //move Down
                 UpdateCurrentLocation(item.first, item.second);
-                // TODO This is where we tell the car to which direction to go
-                //OnLocationChanged.Invoke(2);
+                should_wait = true;
+                Message directionMsg = myHandler.obtainMessage(
+                        Wrapper.MESSAGE_DIRECTION, 2, -1, null);  // send a message to the Wrapper
+                directionMsg.sendToTarget();
+                while (should_wait){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e){
+                        Log.e("-W-", "Graph.MoveToTarget(): InterruptedException ", e);
+                    }
+                }
                 CheckForObstacle(prev_x, prev_y);
                 continue;
             }
@@ -239,8 +254,17 @@ public class Graph {
             {
                 //move Up
                 UpdateCurrentLocation(item.first, item.second);
-                // TODO This is where we tell the car to which direction to go
-                //OnLocationChanged.Invoke(0);
+                should_wait = true;
+                Message directionMsg = myHandler.obtainMessage(
+                        Wrapper.MESSAGE_DIRECTION, 0, -1, null);  // send a message to the Wrapper
+                directionMsg.sendToTarget();
+                while (should_wait){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e){
+                        Log.e("-W-", "Graph.MoveToTarget(): InterruptedException ", e);
+                    }
+                }
                 CheckForObstacle(prev_x, prev_y);
                 continue;
             }
@@ -248,8 +272,17 @@ public class Graph {
             {
                 //move Right
                 UpdateCurrentLocation(item.first, item.second);
-                // TODO This is where we tell the car to which direction to go
-                //OnLocationChanged.Invoke(1);
+                should_wait = true;
+                Message directionMsg = myHandler.obtainMessage(
+                        Wrapper.MESSAGE_DIRECTION, 1, -1, null);  // send a message to the Wrapper
+                directionMsg.sendToTarget();
+                while (should_wait){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e){
+                        Log.e("-W-", "Graph.MoveToTarget(): InterruptedException ", e);
+                    }
+                }
                 CheckForObstacle(prev_x, prev_y);
                 continue;
             }
@@ -257,8 +290,17 @@ public class Graph {
             {
                 //move Left
                 UpdateCurrentLocation(item.first, item.second);
-                // TODO This is where we tell the car to which direction to go
-                //OnLocationChanged.Invoke(3);
+                should_wait = true;
+                Message directionMsg = myHandler.obtainMessage(
+                        Wrapper.MESSAGE_DIRECTION, 3, -1, null);  // send a message to the Wrapper
+                directionMsg.sendToTarget();
+                while (should_wait){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e){
+                        Log.e("-W-", "Graph.MoveToTarget(): InterruptedException ", e);
+                    }
+                }
                 CheckForObstacle(prev_x, prev_y);
                 continue;
             }
@@ -284,10 +326,7 @@ public class Graph {
             if (count < StaticVars.backtrackMinCount)
             {
                 StaticVars.backtrackMinCount = count;
-//                StaticVars.backtrackMinSol = sol2.stream().collect(Collectors.toList());
-//                StaticVars.backtrackMinSol = sol2.clone();
                 StaticVars.backtrackMinSol = new ArrayList<Pair<Integer, Integer>>(sol2);
-                //StaticVars.backtrackMinSol = sol2.Select(cur_item => cur_item).ToList();
             }
             sol[x][y] = 0;
             sol2.remove(entry);
