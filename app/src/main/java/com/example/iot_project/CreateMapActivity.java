@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -51,5 +52,13 @@ public class CreateMapActivity extends AppCompatActivity {
         int numCols = Integer.parseInt(numRowsStr);
         StaticVars.numRows = numRows;
         StaticVars.numCols = numCols;
+
+        String[][] mapDescription = new String[StaticVars.numRows][StaticVars.numCols];
+        for (int i = 0; i < StaticVars.numRows; i++) {
+            for (int j = 0; j < StaticVars.numCols; j++) {
+                mapDescription[i][j] = "O";
+            }
+        }
+        StaticVars.grid = new Graph(StaticVars.numRows,  StaticVars.numCols, mapDescription, null).PrintGraph();
     }
 }
