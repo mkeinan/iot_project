@@ -36,5 +36,15 @@ public class MainActivity extends FirebaseActivity {
                 finish();
             }
         });
+
+        Button goToCreateMapButton =  (Button) findViewById(R.id.go_to_create_map_button);
+        goToCreateMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createMapIntent = new Intent(getApplicationContext(), CreateMapActivity.class);
+                startActivity(createMapIntent);
+                finish();
+            }
+        });
     }
 }
