@@ -18,6 +18,8 @@ public class SimulationActivity extends AppCompatActivity {
     Button backToMainButton;
     TextView mapText;
 
+    Graph graph;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +49,11 @@ public class SimulationActivity extends AppCompatActivity {
             }
         });
 
-        paintMap();
+        updateMap();
     }
 
-    public void paintMap(){
-
+    public void updateMap(){
+        mapText.setText(graph.PrintGraph());
     }
 
     public void runSimulation(){
