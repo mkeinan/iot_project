@@ -25,6 +25,17 @@ public class Graph {
         return data;
     }
 
+    String PrintGraph() {
+        String res = "";
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                res += data[row][col];
+            }
+            res += "\n";
+        }
+        return res;
+    }
+
     public Graph(int columns, int rows, String[][] data)
     {
         this.obstacleHandle = false;
