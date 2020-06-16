@@ -13,7 +13,7 @@ public class Graph {
     private int tiles;
     private boolean obstacleHandle;
     private LinkedList<Integer>[] adj; //Adjacency Lists
-    private String[][]data;
+    private String[][] data;
     private Dictionary<Integer, Pair<Integer,Integer>> numberToCordMap;
 
     private Handler myHandler;
@@ -216,6 +216,7 @@ public class Graph {
 
                 }
                 queue.add(n);
+                StaticVars.grid = PrintGraph();
             }
         }
     }
@@ -241,6 +242,7 @@ public class Graph {
                 Message directionMsg = myHandler.obtainMessage(
                         Wrapper.MESSAGE_DIRECTION, 2, -1, null);  // send a message to the Wrapper
                 directionMsg.sendToTarget();
+                Log.w("-W-", "Graph.MoveToTarget(): going to busy-wait. TID = " + Thread.currentThread().getId());
                 while (should_wait){
                     try {
                         Thread.sleep(100);
@@ -259,6 +261,7 @@ public class Graph {
                 Message directionMsg = myHandler.obtainMessage(
                         Wrapper.MESSAGE_DIRECTION, 0, -1, null);  // send a message to the Wrapper
                 directionMsg.sendToTarget();
+                Log.w("-W-", "Graph.MoveToTarget(): going to busy-wait. TID = " + Thread.currentThread().getId());
                 while (should_wait){
                     try {
                         Thread.sleep(100);
@@ -277,6 +280,7 @@ public class Graph {
                 Message directionMsg = myHandler.obtainMessage(
                         Wrapper.MESSAGE_DIRECTION, 1, -1, null);  // send a message to the Wrapper
                 directionMsg.sendToTarget();
+                Log.w("-W-", "Graph.MoveToTarget(): going to busy-wait. TID = " + Thread.currentThread().getId());
                 while (should_wait){
                     try {
                         Thread.sleep(100);
@@ -295,6 +299,7 @@ public class Graph {
                 Message directionMsg = myHandler.obtainMessage(
                         Wrapper.MESSAGE_DIRECTION, 3, -1, null);  // send a message to the Wrapper
                 directionMsg.sendToTarget();
+                Log.w("-W-", "Graph.MoveToTarget(): going to busy-wait. TID = " + Thread.currentThread().getId());
                 while (should_wait){
                     try {
                         Thread.sleep(100);

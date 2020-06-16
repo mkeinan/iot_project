@@ -1,6 +1,7 @@
 package com.example.iot_project;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -25,14 +26,17 @@ public class Wrapper extends Thread implements Handler.Callback {
     public boolean shouldBusyWait = false;
 
     public Wrapper(SimulationActivity.Robot robot) {
+//        Looper.prepare();  // => this does not work (throws exception java.lang.RuntimeException: Only one Looper may be created per thread)
         myRobot = robot;
-        CreateGraph();
+//        CreateGraph();
         cur_direction = Direction.Up;
     }
 
     // TODO remember to invoke this method only when you have bluetooth connection
     public void run() {
-        Log.w("-D-", "Wrapper.run(): starting");
+        Looper.prepare();
+        CreateGraph();
+        Log.w("-D-", "Wrapper.run(): starting. TID = " + Thread.currentThread().getId());
         Log.e("-D-", "Wrapper.run(): StaticVars.startRow = " + StaticVars.startRow);
         Log.e("-D-", "Wrapper.run(): StaticVars.startCol = " + StaticVars.startCol);
         Log.e("-D-", "Wrapper.run(): StaticVars.finishRow = " + StaticVars.finishRow);
@@ -40,13 +44,22 @@ public class Wrapper extends Thread implements Handler.Callback {
         StaticVars.hasReachTarget = false;
         if (!(StaticVars.startRow == StaticVars.finishRow && StaticVars.startCol == StaticVars.finishCol))
         {
-            try {
-                Log.e("-E-", "Wrapper.run(): going to start the algorithm");
-                StartAlgo();
-            } catch (Exception e){
-                Log.e("-E-", "Wrapper.run(): Exception occurred, killing the Wrapper");
-                return;
-            }
+//            Looper.prepare();
+            Log.e("-E-", "Wrapper.run(): going to start the algorithm");
+            Thread myRunnable = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        StartAlgo();
+                    } catch (Exception e){
+                        Log.e("-E-", "Wrapper.run(): Exception occurred, killing the Wrapper");
+                    }
+                }
+            };
+            myRunnable.start();
+//                StartAlgo();
+
+            Looper.loop();
         }
         Log.e("-D-", "Finished running the algorithm");
     }
@@ -56,6 +69,8 @@ public class Wrapper extends Thread implements Handler.Callback {
     @Override
     public boolean handleMessage(@NonNull Message msg)
     {
+        Log.w("-W-", "Wrapper.handleMessage(): new message received: " + msg.arg1);
+        Log.w("-W-", "Wrapper.handleMessage(): TID = "  + Thread.currentThread().getId());
         if (!(msg.what == MESSAGE_DIRECTION)){
             Log.e("-E-", "Wrapper.handleMessage(): Unknown message received");
             graph.should_wait = false;
@@ -64,7 +79,7 @@ public class Wrapper extends Thread implements Handler.Callback {
         int direction = msg.arg1;
         //StartCoroutine(Mover(n));
         int result = -1;
-        RotateToDirection(direction);
+
         //TODO
         // that is the big one. _robotScript is the component that sends data to the arduino
         // result = _robotScript.Move(n);
@@ -72,6 +87,8 @@ public class Wrapper extends Thread implements Handler.Callback {
         // ==============         and then busy-wait until the robot finished the move  ===========
         //  result is 1 if reached target, 0 if move was ok, -1 if obstacle detected, -2 out of bounds, -3 unexpected.
 
+
+        RotateToDirection(direction);
         boolean res = myRobot.doCommand(SimulationActivity.Commands.MOVE_TO_BLACK_LINE);
         if (res){
             result = 0;
@@ -175,6 +192,7 @@ public class Wrapper extends Thread implements Handler.Callback {
             }
         }
         graph = new Graph(cols, rows, dataForGraph, new Handler(this));
+//        graph = new Graph(cols, rows, dataForGraph, new Handler(Looper.myLooper()));
     }
 
     private void StartAlgo() throws Exception {
