@@ -1,5 +1,6 @@
 package com.example.iot_project;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.List;
@@ -24,4 +25,11 @@ public class StaticVars {
     public static List<Pair<Integer, Integer>> backtrackMinSol;
 
     public static boolean hasReachTarget;
+
+    public static void printStatusToLog(){
+        Log.w("-D-", "StaticVars: numRows=" + numRows + "numCols=" + numCols +
+                " startRow=" + startRow + " startCol=" + startCol + " finishRow=" +
+                finishRow + " finishCol=" + finishCol + " curRow=" + curRow + "curCol=" + curCol +
+                " grid=" + grid + " algo=" + algo + " backtrackMinCount=" + backtrackMinCount);
+    }
 }

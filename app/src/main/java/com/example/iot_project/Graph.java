@@ -217,6 +217,7 @@ public class Graph {
                 }
                 queue.add(n);
                 StaticVars.grid = PrintGraph();
+                StaticVars.printStatusToLog();
             }
         }
     }
@@ -230,6 +231,7 @@ public class Graph {
         {
             if (StaticVars.hasReachTarget)
             {
+                Log.w("-D-", "Graph.MoveToTarget(): Target has been reached... I'm not going to do the move");
                 return;
             }
             prev_x = StaticVars.curRow;

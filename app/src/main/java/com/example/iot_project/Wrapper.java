@@ -28,7 +28,6 @@ public class Wrapper extends Thread implements Handler.Callback {
     public Wrapper(SimulationActivity.Robot robot) {
 //        Looper.prepare();  // => this does not work (throws exception java.lang.RuntimeException: Only one Looper may be created per thread)
         myRobot = robot;
-//        CreateGraph();
         cur_direction = Direction.Up;
     }
 
@@ -44,7 +43,6 @@ public class Wrapper extends Thread implements Handler.Callback {
         StaticVars.hasReachTarget = false;
         if (!(StaticVars.startRow == StaticVars.finishRow && StaticVars.startCol == StaticVars.finishCol))
         {
-//            Looper.prepare();
             Log.e("-E-", "Wrapper.run(): going to start the algorithm");
             Thread myRunnable = new Thread() {
                 @Override
@@ -54,10 +52,10 @@ public class Wrapper extends Thread implements Handler.Callback {
                     } catch (Exception e){
                         Log.e("-E-", "Wrapper.run(): Exception occurred, killing the Wrapper");
                     }
+                    Log.e("-E-", "Wrapper.run(): Thread " + Thread.currentThread().getId() + " - Bye Bye! going to die now");
                 }
             };
             myRunnable.start();
-//                StartAlgo();
 
             Looper.loop();
         }
@@ -81,12 +79,9 @@ public class Wrapper extends Thread implements Handler.Callback {
         int result = -1;
 
         //TODO
-        // that is the big one. _robotScript is the component that sends data to the arduino
-        // result = _robotScript.Move(n);
         //  ==================  this is actually "move to the next black line"  ===================
         // ==============         and then busy-wait until the robot finished the move  ===========
         //  result is 1 if reached target, 0 if move was ok, -1 if obstacle detected, -2 out of bounds, -3 unexpected.
-
 
         RotateToDirection(direction);
         boolean res = myRobot.doCommand(SimulationActivity.Commands.MOVE_TO_BLACK_LINE);
@@ -102,6 +97,7 @@ public class Wrapper extends Thread implements Handler.Callback {
 
         if (result == 1)
         {
+            Log.e("-E-", "Wrapper.handleMessage(): Target has been reached!");
             StaticVars.hasReachTarget = true;
         }
         if (result == -1)
@@ -174,6 +170,8 @@ public class Wrapper extends Thread implements Handler.Callback {
         }
         if (!res){
             Log.e("-E-", "Wrapper.RotateToDirection(): something about the vehicle is horribly wrong");
+        } else {
+            Log.w("-D-", "Wrapper.RotateToDirection(): direction rotate was successful");
         }
     }
 
@@ -211,6 +209,7 @@ public class Wrapper extends Thread implements Handler.Callback {
                 Log.w("-E-", "Wrapper.StartAlgo(): invalid algorithm - " + StaticVars.algo);
                 throw new Exception("No Algo");
         }
+        Log.w("-I-", "Wrapper.StartAlgo(): simulation finished!" + StaticVars.algo);
     }
 }
 
