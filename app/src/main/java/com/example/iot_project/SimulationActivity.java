@@ -97,7 +97,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
     }
 
     private void InitUI() {
-        Log.w("-D-", "CreateMapActivity.InitUI(): initializing UI");
+        Log.w("-D-", "CreateMapActivity.InitUI(): initializing UI. TID = " + Thread.currentThread().getId());
         runButton = (Button) findViewById(R.id.button_run_simulation);
         scanButton = (Button) findViewById(R.id.simulation_scan_button);
         backToMainButton = (Button) findViewById(R.id.button_go_back_to_main);
@@ -159,6 +159,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             Log.w("-D-", "SimulationActivity.handleMessage(): " + receivedMsg);
             incomingMessage.append(receivedMsg);  // since the message is received in chunks, we append..
             myRobot.shouldBusyWait = false;  // horrible interference with Robot's internal field... telling him that response has arrived
+            updateMap();
             return true;
         }
         if (msg.what == SimulationActivity.MessageConstants.MESSAGE_WRITE){
@@ -332,10 +333,12 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         }
 
         private void sendCommand(String command){
+            Log.e("-D-", "Robot.sendCommand(): " + command);
             sendMessage(command);
         }
 
         private boolean readFeedback(){
+            Log.w("-D-", "Robot.readFeedback(): ");
             String feedback = incomingMessage.toString();
             if (feedback.equals(Responses.SUCCESS)){
                 return true;
@@ -351,6 +354,8 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         //     true = success
         //     false = obstacle
         public boolean doCommand(String command){
+            Log.w("-D-", "Robot.doCommand(): " + command);
+            Log.w("-D-", "Robot.doCommand(): TID = " + Thread.currentThread().getId());
             if (!(command.equals(Commands.TURN_90_RIGHT) ||
                     command.equals(Commands.TURN_90_LEFT) ||
                     command.equals(Commands.MOVE_TO_BLACK_LINE))) {
@@ -359,6 +364,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             }
             shouldBusyWait = true;
             sendCommand(command);
+            Log.w("-D-", "Robot.doCommand(): going to busy-wait");
             while (shouldBusyWait){
                 try {
                     Thread.sleep(100);
@@ -366,6 +372,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
                     Log.e("-D-", "Robot.doCommand(): interrupted during sleep!");
                 }
             }
+            Log.w("-D-", "Robot.doCommand(): finished busy-wait");
             return readFeedback();
         }
     }
