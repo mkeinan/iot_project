@@ -14,6 +14,7 @@ import com.example.iot_project.StaticVars;
 public class ChooseParamsActivity extends AppCompatActivity {
 
     Button continueButton;
+    Button defaultButton;
     EditText startRowText;
     EditText startColText;
     EditText finishRowText;
@@ -30,6 +31,7 @@ public class ChooseParamsActivity extends AppCompatActivity {
     private void InitUI() {
         Log.w("-D-", "CreateMapActivity.InitUI(): initializing UI");
         continueButton = (Button) findViewById(R.id.button_choose_params_continue);
+        defaultButton = (Button) findViewById(R.id.button_choose_default_params);
         startRowText = (EditText) findViewById(R.id.choose_start_row);
         startColText = (EditText) findViewById(R.id.choose_start_col);
         finishRowText = (EditText) findViewById(R.id.choose_finish_row);
@@ -50,6 +52,13 @@ public class ChooseParamsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        defaultButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDefaultParams();
+            }
+        });
     }
 
     private void storeParams() {
@@ -63,8 +72,8 @@ public class ChooseParamsActivity extends AppCompatActivity {
         StaticVars.startCol = startCol;
 
         // finish row and col
-        String finishRowStr = startRowText.getText().toString();
-        String finishColStr = startColText.getText().toString();
+        String finishRowStr = finishRowText.getText().toString();
+        String finishColStr = finishColText.getText().toString();
         int finishRow = Integer.parseInt(finishRowStr);
         int finishCol = Integer.parseInt(finishColStr);
         StaticVars.finishRow = finishRow;
@@ -72,5 +81,13 @@ public class ChooseParamsActivity extends AppCompatActivity {
 
         // algorithm
         StaticVars.algo = chooseAlgoText.getText().toString();
+    }
+
+    private void setDefaultParams(){
+        startRowText.setText("0");
+        startColText.setText("0");
+        finishRowText.setText("4");
+        finishColText.setText("4");
+        chooseAlgoText.setText("BFS");
     }
 }

@@ -32,10 +32,16 @@ public class Wrapper extends Thread implements Handler.Callback {
 
     // TODO remember to invoke this method only when you have bluetooth connection
     public void run() {
+        Log.w("-D-", "Wrapper.run(): starting");
+        Log.e("-D-", "Wrapper.run(): StaticVars.startRow = " + StaticVars.startRow);
+        Log.e("-D-", "Wrapper.run(): StaticVars.startCol = " + StaticVars.startCol);
+        Log.e("-D-", "Wrapper.run(): StaticVars.finishRow = " + StaticVars.finishRow);
+        Log.e("-D-", "Wrapper.run(): StaticVars.finishCol = " + StaticVars.finishCol);
         StaticVars.hasReachTarget = false;
         if (!(StaticVars.startRow == StaticVars.finishRow && StaticVars.startCol == StaticVars.finishCol))
         {
             try {
+                Log.e("-E-", "Wrapper.run(): going to start the algorithm");
                 StartAlgo();
             } catch (Exception e){
                 Log.e("-E-", "Wrapper.run(): Exception occurred, killing the Wrapper");
@@ -176,12 +182,15 @@ public class Wrapper extends Thread implements Handler.Callback {
         switch (StaticVars.algo)
         {
             case "BFS":
+                Log.w("-E-", "Wrapper.StartAlgo(): chosen " + StaticVars.algo);
                 graph.BFS(StaticVars.startRow, StaticVars.startCol, graph);
                 break;
             case "DFS":
+                Log.w("-E-", "Wrapper.StartAlgo(): chosen " + StaticVars.algo);
                 graph.DFS(StaticVars.startRow, StaticVars.startCol, graph);
                 break;
             default:
+                Log.w("-E-", "Wrapper.StartAlgo(): invalid algorithm - " + StaticVars.algo);
                 throw new Exception("No Algo");
         }
     }
