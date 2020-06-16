@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BluetoothActivity"></activity>
+        <activity android:name=".SimulationActivity"></activity>
+        <activity android:name=".ChooseParamsActivity" />
+        <activity android:name=".CreateMapActivity" />
+        <activity android:name=".BluetoothActivity" />
         <activity android:name=".AlgorithmActivity" />
         <activity android:name=".GetMapActivity" />
         <activity
