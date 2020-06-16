@@ -25,10 +25,9 @@ public class Wrapper implements Handler.Callback {
         cur_direction = Direction.Up;
     }
 
+    // TODO remember to invoke this method only when you have bluetooth connection
     void Start() throws Exception {
         StaticVars.hasReachTarget = false;
-        //TODO this is the arduino connection
-        // graph.OnLocationChanged.AddListener(myAction);
         if (!(StaticVars.startRow == StaticVars.finishRow && StaticVars.startCol == StaticVars.finishCol))
         {
             StartAlgo();
@@ -52,7 +51,9 @@ public class Wrapper implements Handler.Callback {
         RotateToDirection(direction);
         //TODO
         // that is the big one. _robotScript is the component that sends data to the arduino
-        // result = _robotScript.Move(n);  // this is actually "move to the next black line"
+        // result = _robotScript.Move(n);
+        //  ==================  this is actually "move to the next black line"  ===================
+        // ==============         and then busy-wait until the robot finished the move  ===========
         //  result is 1 if reached target, 0 if move was ok, -1 if obstacle detected, -2 out of bounds, -3 unexpected.
         if (result == 1)
         {
@@ -74,6 +75,7 @@ public class Wrapper implements Handler.Callback {
         // TODO rotation logic here:
         //  our current direction is cur_direction (nobody else changes this field).
         //  we need to call the robot's function that changes the direction, and update the field.
+        //  ==============   and then busy-wait until the robot finished the move  ===========
     }
 
     private void CreateGraph()
