@@ -432,14 +432,16 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
     }
 
     public interface Commands {
-        public static final String TURN_90_RIGHT = "e";
-        public static final String TURN_90_LEFT = "q";
-        public static final String MOVE_TO_BLACK_LINE = "g";
+        public static final String TURN_90_RIGHT = "R";
+        public static final String TURN_90_LEFT = "L";
+        public static final String MOVE_TO_BLACK_LINE = "G";
     }
 
     public interface Responses {
-        public static final String SUCCESS = "y";
-        public static final String OBSTACLE_DETECTED = "n";
+        public static final String SUCCESS = "0";
+        public static final String OBSTACLE_DETECTED = "1";
+        public static final String TURN_RIGHT = ">";
+        public static final String TURN_LEFT = "<";
     }
 
     // =======================================================================================

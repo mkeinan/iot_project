@@ -110,13 +110,15 @@ public class Wrapper extends Thread implements Handler.Callback {
 
         if (StaticVars.curRow==StaticVars.finishRow && StaticVars.curCol == StaticVars.finishCol){
             result = 1;
-        }
-
-        if (result == 1)
-        {
             Log.e("-E-", "Wrapper.handleMessage(): Target has been reached!");
             StaticVars.hasReachTarget = true;
         }
+
+        /*if (result == 1)
+        {
+            Log.e("-E-", "Wrapper.handleMessage(): Target has been reached!");
+            StaticVars.hasReachTarget = true;
+        }*/
         if (result == -1)
         {
             graph.addObstacle(StaticVars.curRow, StaticVars.curCol);
