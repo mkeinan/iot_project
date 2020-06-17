@@ -196,7 +196,7 @@ public class Wrapper extends Thread implements Handler.Callback {
     private void CreateGraph()
     {
         String data = StaticVars.grid;
-        String[] dataLines = data.split("\r\n" );
+        String[] dataLines = data.split("\\r?\\n" );
         int rows = dataLines.length;
         int cols = dataLines[0].length();
         String[][] dataForGraph = new String[rows][cols];
