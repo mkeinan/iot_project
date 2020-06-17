@@ -70,6 +70,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
     Button runButton;
     Button backToMainButton;
     Button toggleDebugInfoButton;
+    Button answerMyselfButton;
     TextView mapText;
     TextView debugInfoText;
 
@@ -106,6 +107,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         scanButton = (Button) findViewById(R.id.simulation_scan_button);
         backToMainButton = (Button) findViewById(R.id.button_go_back_to_main);
         toggleDebugInfoButton = (Button) findViewById(R.id.simulation_debug_info_button);
+        answerMyselfButton = (Button) findViewById(R.id.simulation_answer_myself_button);
         mapText = (TextView) findViewById(R.id.text_simulation_map);
         debugInfoText = (TextView) findViewById(R.id.text_debug_info);
 
@@ -139,6 +141,38 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
                     debugInfoText.setVisibility(View.INVISIBLE);
                 else
                     debugInfoText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        answerMyselfButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] options = {Responses.SUCCESS, Responses.OBSTACLE_DETECTED};
+                AlertDialog.Builder builder = new AlertDialog.Builder(SimulationActivity.this);
+                builder.setTitle("send to yourself:");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // the user clicked on options[which]
+                        if (options[which].equals(Responses.SUCCESS)) {
+                            Message readMsg = handler.obtainMessage(
+                                    SimulationActivity.MessageConstants.MESSAGE_READ,
+                                    Responses.SUCCESS.getBytes().length,
+                                    -1,
+                                    Responses.SUCCESS.getBytes().clone());  // send a clone to not interfere with the original buffer
+                            readMsg.sendToTarget();
+                        }
+                        if (options[which].equals(Responses.OBSTACLE_DETECTED)) {
+                            Message readMsg = handler.obtainMessage(
+                                    SimulationActivity.MessageConstants.MESSAGE_READ,
+                                    Responses.OBSTACLE_DETECTED.getBytes().length,
+                                    -1,
+                                    Responses.OBSTACLE_DETECTED.getBytes().clone());  // send a clone to not interfere with the original buffer
+                            readMsg.sendToTarget();
+                        }
+                    }
+                });
+                builder.show();
             }
         });
 
