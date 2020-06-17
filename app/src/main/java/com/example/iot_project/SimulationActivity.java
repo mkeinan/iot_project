@@ -79,6 +79,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
     Wrapper myWrapper;
 
     String lastSentMessage = "";
+    boolean runningOffline = false;
 
 
     @Override
@@ -123,7 +124,27 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                runSimulation();
+                if (connectedThread == null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SimulationActivity.this);
+                    builder.setTitle("No Bluetooth Connection...");
+                    builder.setMessage("Do you want to run the simulation offline? \nYou will have to answer by yourself if you do...");
+                    builder.setPositiveButton("Yes, run simulation offline", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK button
+                            runningOffline = true;
+                            runSimulation();
+                        }
+                    });
+                    builder.setNegativeButton("No, cancel simulation", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            runningOffline = false;
+                        }
+                    });
+                    builder.show();
+                } else {
+                    runSimulation();
+                }
             }
         });
 
@@ -212,9 +233,20 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
     public void runSimulation(){
         Log.w("-D-", "SimulationActivity.runSimulation(): starting");
+        if (StaticVars.hasReachTarget){
+            Toast.makeText(getApplicationContext(), "runSimulation(): a simulation has already ended, please reset...", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(getApplicationContext(), "runSimulation(): starting simulation", Toast.LENGTH_LONG).show();
         myWrapper = new Wrapper(myRobot);  // to allow multiple clicks on "run" (should we?)
         myWrapper.start();
         Log.w("-D-", "SimulationActivity.runSimulation(): Wrapper launched");
+    }
+
+    public void checkSimulationStatus(){
+        if (StaticVars.hasReachTarget){
+            Toast.makeText(getApplicationContext(), "checkSimulationStatus(): Simulation Finished!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -238,6 +270,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             Thread.yield();  // very, very heuristic usage... to allow StaticVars to be updated
             updateDebugInfo();
             updateMap();
+            checkSimulationStatus();
             return true;
         }
         if (msg.what == SimulationActivity.MessageConstants.MESSAGE_WRITE){
@@ -275,23 +308,28 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
     public void sendMessage(String msg){
         Log.d("-D-", "ConnectThread: sendMessage() - going to try and send a message");
-        if (bluetoothAdapter == null){
-            Log.w("-D-", "SimulationActivity.sendMessage(): must enable bluetooth by pressing 'scan' ");
-            Toast.makeText(getApplicationContext(), "must enable bluetooth by pressing 'scan'", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (chosenDevice == null){
-            Log.w("-D-", "SimulationActivity.sendMessage(): must choose a target device by pressing 'scan' ");
-            Toast.makeText(getApplicationContext(), "must choose a target device by pressing 'scan'", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (connectedThread == null){
-            Log.w("-E-", "SimulationActivity.sendMessage(): connectedThread is null");
-            Toast.makeText(getApplicationContext(), "connectedThread is null", Toast.LENGTH_LONG).show();
-            return;
-        }
         incomingMessage = new StringBuilder();  // "zero-out" the incoming message to be ready for the feedback
-        connectedThread.write(msg.getBytes());
+        if (!runningOffline) {
+            // not running offline, must verify that bluetooth connection is established
+            if (bluetoothAdapter == null) {
+                Log.w("-D-", "SimulationActivity.sendMessage(): must enable bluetooth by pressing 'scan' ");
+                Toast.makeText(getApplicationContext(), "must enable bluetooth by pressing 'scan'", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (chosenDevice == null) {
+                Log.w("-D-", "SimulationActivity.sendMessage(): must choose a target device by pressing 'scan' ");
+                Toast.makeText(getApplicationContext(), "must choose a target device by pressing 'scan'", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (connectedThread == null) {
+                Log.w("-E-", "SimulationActivity.sendMessage(): connectedThread is null");
+                Toast.makeText(getApplicationContext(), "connectedThread is null", Toast.LENGTH_LONG).show();
+                return;
+            }
+            connectedThread.write(msg.getBytes());  // actually send the message via bluetooth
+        } else {
+            Log.d("-D-", "ConnectThread: sendMessage() - running offline... message not really sent");
+        }
         lastSentMessage = msg;
         updateDebugInfo();
         Log.w("-D-", "SimulationActivity.sendMessage(): sending message: " + msg);
