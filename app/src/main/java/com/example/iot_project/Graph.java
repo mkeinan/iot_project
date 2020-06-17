@@ -160,6 +160,8 @@ public class Graph {
             }
             if (!visited[n])
             {
+                StaticVars.grid = PrintGraph();
+                StaticVars.printStatusToLog();
                 Pair<Integer,Integer> current = numberToCordMap.get(n);
                 DFSUtil(current.first,current.second, visited);
             }
