@@ -16,6 +16,22 @@ public class Wrapper extends Thread implements Handler.Callback {
         public static final int Left = 3;
     }
 
+    public String intToDirection(int intDir){
+        if (intDir == 0){
+            return "up";
+        }
+        if (intDir == 1){
+            return "right";
+        }
+        if (intDir == 2){
+            return "down";
+        }
+        if (intDir == 3){
+            return "left";
+        }
+        return "UNKNOWN";
+    }
+
     public static final int MESSAGE_DIRECTION = 0;
 
     public Graph graph;
@@ -84,6 +100,7 @@ public class Wrapper extends Thread implements Handler.Callback {
         //  result is 1 if reached target, 0 if move was ok, -1 if obstacle detected, -2 out of bounds, -3 unexpected.
 
         RotateToDirection(direction);
+        StaticVars.direction = intToDirection(cur_direction);
         boolean res = myRobot.doCommand(SimulationActivity.Commands.MOVE_TO_BLACK_LINE);
         if (res){
             result = 0;
@@ -171,6 +188,7 @@ public class Wrapper extends Thread implements Handler.Callback {
         if (!res){
             Log.e("-E-", "Wrapper.RotateToDirection(): something about the vehicle is horribly wrong");
         } else {
+            cur_direction = n;
             Log.w("-D-", "Wrapper.RotateToDirection(): direction rotate was successful");
         }
     }

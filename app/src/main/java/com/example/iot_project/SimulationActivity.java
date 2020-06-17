@@ -69,11 +69,15 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
     Button runButton;
     Button backToMainButton;
+    Button toggleDebugInfoButton;
     TextView mapText;
+    TextView debugInfoText;
 
 //    Graph graph;
     Robot myRobot;
     Wrapper myWrapper;
+
+    String lastSentMessage = "";
 
 
     @Override
@@ -101,7 +105,9 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         runButton = (Button) findViewById(R.id.button_run_simulation);
         scanButton = (Button) findViewById(R.id.simulation_scan_button);
         backToMainButton = (Button) findViewById(R.id.button_go_back_to_main);
+        toggleDebugInfoButton = (Button) findViewById(R.id.simulation_debug_info_button);
         mapText = (TextView) findViewById(R.id.text_simulation_map);
+        debugInfoText = (TextView) findViewById(R.id.text_debug_info);
 
         backToMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,12 +132,48 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             }
         });
 
+        toggleDebugInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (debugInfoText.getVisibility() == View.VISIBLE)
+                    debugInfoText.setVisibility(View.INVISIBLE);
+                else
+                    debugInfoText.setVisibility(View.VISIBLE);
+            }
+        });
+
         updateMap();
     }
 
     public void updateMap(){
         Log.w("-D-", "SimulationActivity.updateMap(): updating map's text");
         mapText.setText(StaticVars.grid);
+    }
+
+    public void updateDebugInfo(){
+        Log.w("-D-", "SimulationActivity.updateDebugInfo(): TID = " + Thread.currentThread().getId());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder sb = new StringBuilder();
+                sb.append("out: ");
+                sb.append(lastSentMessage);
+                sb.append(" in: ");
+                if (incomingMessage.length() > 0) {
+                    sb.append(incomingMessage.charAt(0));
+                } else {
+                    sb.append("");
+                }
+                sb.append("\n");
+                sb.append(" curRow: ");
+                sb.append(StaticVars.curRow);
+                sb.append(" curCol: ");
+                sb.append(StaticVars.curCol);
+                sb.append(" direction: ");
+                sb.append(StaticVars.direction);
+                debugInfoText.setText(sb.toString());
+            }
+        });
     }
 
     public void runSimulation(){
@@ -159,6 +201,8 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             Log.w("-D-", "SimulationActivity.handleMessage(): " + receivedMsg);
             incomingMessage.append(receivedMsg);  // since the message is received in chunks, we append..
             myRobot.shouldBusyWait = false;  // horrible interference with Robot's internal field... telling him that response has arrived
+            Thread.yield();  // very, very heuristic usage... to allow StaticVars to be updated
+            updateDebugInfo();
             updateMap();
             return true;
         }
@@ -214,6 +258,8 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         }
         incomingMessage = new StringBuilder();  // "zero-out" the incoming message to be ready for the feedback
         connectedThread.write(msg.getBytes());
+        lastSentMessage = msg;
+        updateDebugInfo();
         Log.w("-D-", "SimulationActivity.sendMessage(): sending message: " + msg);
     }
 
@@ -345,7 +391,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
 
         private boolean readFeedback(){
             Log.w("-D-", "Robot.readFeedback(): ");
-            String feedback = incomingMessage.toString();
+            String feedback = incomingMessage.toString().substring(0, 1);  // only consider the first character!
             if (feedback.equals(Responses.SUCCESS)){
                 return true;
             } else if (feedback.equals(Responses.OBSTACLE_DETECTED)){

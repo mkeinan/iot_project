@@ -16,15 +16,42 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.10"
-        app:layout_constraintHorizontal_bias="0.2" />
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.1" />
+
+    <Button
+        android:id="@+id/simulation_debug_info_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="toggle debug info"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.9" />
+
+    <TextView
+        android:id="@+id/text_debug_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="debug"
+        android:textSize="10sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.5" />
 
     <TextView
         android:id="@+id/text_simulation_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MAP"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

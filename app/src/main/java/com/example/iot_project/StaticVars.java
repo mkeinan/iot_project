@@ -18,6 +18,8 @@ public class StaticVars {
     public static int curRow;
     public static int curCol;
 
+    public static String direction;
+
     public static String grid;
     public static String algo;
 
