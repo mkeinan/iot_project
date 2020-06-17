@@ -24,12 +24,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="toggle debug info"
-        android:textSize="8sp"
+        android:textSize="7sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.9" />
+
+    <Button
+        android:id="@+id/simulation_answer_myself_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="answer myself"
+        android:textSize="7sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.15"
         app:layout_constraintHorizontal_bias="0.9" />
 
     <TextView
@@ -44,7 +57,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.15"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintHorizontal_bias="0.2" />
 
     <TextView
         android:id="@+id/text_simulation_map"
