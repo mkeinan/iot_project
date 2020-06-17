@@ -97,7 +97,7 @@ public class Graph {
         for (LinkedList<Integer> item : adj)
         {
             if (item.contains(row * columns + col)){
-                item.remove(row * columns + col);
+                item.remove(item.indexOf(row * columns + col));
             }
         }
         adj[row * columns + col].clear();
