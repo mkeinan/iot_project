@@ -152,15 +152,16 @@ public class Wrapper extends Thread implements Handler.Callback {
 
         boolean res = true;
         int rotateHelper = RotateToDirectionHelper(cur_direction,n);
-        if (rotateHelper == Direction.Left){
-            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
-        }
-        if (rotateHelper == Direction.Right){
-            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-        }
-        else {
-            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
+        switch (rotateHelper){
+            case Direction.Left:
+                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
+                break;
+            case Direction.Right:
+                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
+                break;
+            default:
+                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
+                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
         }
         if (!res){
             Log.e("-E-", "Wrapper.RotateToDirection(): something about the vehicle is horribly wrong");
