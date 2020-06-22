@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iot_project</string>
+    <string name="app_name">Autonomic</string>
     <string name="title_activity_sign_in">SignInActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
