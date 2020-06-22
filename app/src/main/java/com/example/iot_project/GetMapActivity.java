@@ -41,7 +41,6 @@ public class GetMapActivity extends AppCompatActivity {
     Button goBackToMainButton;
     Button goToAlgorithmButton;
     TextView mapText;
-    Graph tryAlgorithmGraph;
     FirebaseFirestore db;
     private int nextMap = 0;
     private DocumentSnapshot mDocSnap = null;
@@ -80,13 +79,10 @@ public class GetMapActivity extends AppCompatActivity {
         goToAlgorithmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    initGraph(mDocSnap);
-                    tryAlgorithmGraph.BFS(0,0,mapText,tryAlgorithmGraph);
-                    Toast.makeText(getApplicationContext(), "Running BFS...", Toast.LENGTH_LONG).show();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                initGraph(mDocSnap);
+                Intent chooseParamsIntent = new Intent(getApplicationContext(), ChooseParamsActivity.class);
+                startActivity(chooseParamsIntent);
+                finish();
             }
         });
     }
@@ -105,32 +101,9 @@ public class GetMapActivity extends AppCompatActivity {
                 mapDescription[i][j] = Character.toString(curMapRows.get(i).charAt(j));
             }
         }
-        //tryAlgorithmGraph = new Graph(rowsNum, colsNum, mapDescription);
-        tryAlgorithmGraph = new Graph(rowsNum,colsNum,mapDescription);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mapText.setText(tryAlgorithmGraph.PrintGraph());
-            }
-        });
-    }
-
-    private Map<String, Object> graphToDocument(Graph graph){
-        Map<String, Object> mapMap = new HashMap<>();
-        mapMap.put("height", graph.getRows());
-        mapMap.put("width", graph.getColumns());
-        ArrayList<String> rows = new ArrayList<>();
-        String[][] matrix = graph.getData();
-
-        for (int i = 0; i < graph.getRows(); i++) {
-            StringBuilder curRow = new StringBuilder();
-            for (int j = 0; j < graph.getColumns(); j++) {
-                curRow.append(matrix[i][j]);
-            }
-            rows.add(curRow.toString());
-        }
-        mapMap.put("rows", rows);
-        return mapMap;
+        StaticVars.numRows = rowsNum;
+        StaticVars.numCols = colsNum;
+        StaticVars.grid = new Graph(StaticVars.numRows,  StaticVars.numCols, mapDescription, null).PrintGraph();
     }
 
     private void getSomeMap() {
@@ -156,211 +129,6 @@ public class GetMapActivity extends AppCompatActivity {
                         } else {
                             Log.w("-D-", "Error getting documents.", task.getException());
                         }
-                    }
-                });
-    }
-    class Graph {
-        private int columns;
-        private int rows;
-        private int tiles;
-        private LinkedList<Integer> adj[]; //Adjacency Lists
-        private String data[][];
-        private Dictionary<Integer, Pair<Integer,Integer>> numberToCordMap;
-
-        public int getRows() {
-            return rows;
-        }
-
-        public int getColumns() {
-            return columns;
-        }
-
-        public String[][] getData() {
-            return data;
-        }
-
-        // Constructor
-        Graph(int w, int h) {
-            columns = w;
-            rows = h;
-            tiles = w*h;
-            adj = new LinkedList[tiles];
-            data = new String[h][w];
-            for (int i = 0; i < tiles; ++i) {
-                adj[i] = new LinkedList();
-            }
-            for (int j = 0; j < h; j++) {
-                for (int k = 0; k < w; k++) {
-                    data[j][k] = "O";
-                }
-            }
-            fillTheMap();
-        }
-
-        public Graph(int columns, int rows, String[][] data) {
-            this.columns = columns;
-            this.rows = rows;
-            this.data = data;
-            this.tiles = rows*columns;
-            this.adj = new LinkedList[tiles];
-            for (int i = 0; i < tiles; ++i) {
-                this.adj[i] = new LinkedList();
-            }
-            this.fillTheMap();
-            this.CreateAdjacencies();
-        }
-
-        void fillTheMap(){
-            numberToCordMap= new Hashtable<Integer, Pair<Integer,Integer>>();
-            for (int i=0;i<rows;i++){
-                for (int j=0;j<columns;j++){
-                    numberToCordMap.put(i*columns+j, new Pair(i,j));
-                }
-            }
-        }
-
-        void CreateAdjacencies() {
-            for (int i = 0; i < rows; ++i) {
-                for (int j = 0; j < columns; j++) {
-                    if (!data[i][j].equals("X")) {
-                        CreateAdjacencies(i, j);
-                    }
-                }
-            }
-        }
-
-        void CreateAdjacencies(int row, int col) {
-            addEdge(row, col, row + 1, col);
-            addEdge(row, col, row - 1, col);
-            addEdge(row, col, row, col + 1);
-            addEdge(row, col, row, col - 1);
-        }
-
-        // Function to add an edge into the graph
-        void addEdge(int vx, int vy, int wx, int wy) {
-            if (wx < 0 || wx >= rows || wy < 0 || wy >= columns) {
-                return;
-            }
-            if (!data[vx][vy].equals("X") && !data[wx][wy].equals("X")) {
-                adj[vx * columns + vy].add(wx * columns + wy);
-            }
-        }
-
-        void addObstacle(int row, int col) {
-            data[row][col] = "X";
-        }
-
-        String PrintGraph() {
-            String res = "";
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < columns; col++) {
-                    res += data[row][col];
-                }
-                res += "\n";
-            }
-            return res;
-        }
-
-
-        // prints BFS traversal from a given source s
-        void BFS(final int x, final int y, final TextView textView, final Graph graph) throws InterruptedException {
-            new Thread(){
-                @Override
-                public void run(){
-                    int s = x * rows + y;
-                    // Mark all the vertices as not visited(By default
-                    // set as false)
-                    boolean visited[] = new boolean[columns * rows];
-
-                    // Create a queue for BFS
-                    LinkedList<Integer> queue = new LinkedList<Integer>();
-
-                    // Mark the current node as visited and enqueue it
-                    visited[s] = true;
-                    data[x][y] = "S";
-                    queue.add(s);
-
-                    while (queue.size() != 0) {
-                        // Dequeue a vertex from queue and print it
-                        s = queue.poll();
-                        //System.out.print(s+" ");
-
-                        // Get all adjacent vertices of the dequeued vertex s
-                        // If a adjacent has not been visited, then mark it
-                        // visited and enqueue it
-                        Iterator<Integer> i = adj[s].listIterator();
-                        while (i.hasNext()) {
-                            int n = i.next();
-                            if (!visited[n]) {
-                                visited[n] = true;
-                                Pair<Integer,Integer> current = numberToCordMap.get(n);
-                                data[current.first][current.second] = "V";
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        textView.setText(graph.PrintGraph());
-                                    }
-                                });
-                                queue.add(n);
-                                SystemClock.sleep(2000);
-                            }
-                        }
-                    }
-                    // Thread finished run, ask whether to upload results to cloud:
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            createDialogUploadResultToCloud();
-                        }
-                    });
-                }
-            }.start();
-        }
-    }
-
-    private void createDialogUploadResultToCloud(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(GetMapActivity.this);
-        // Add the buttons
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-                Toast.makeText(getApplicationContext(),
-                        "You make the world a better place ❤", Toast.LENGTH_LONG).show();
-                uploadCurrentResultToCloud();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-                Toast.makeText(getApplicationContext(),
-                        "You have decided not to help in the fight against car accidents...", Toast.LENGTH_LONG).show();
-            }
-        });
-        // Set other dialog properties
-        builder.setMessage("Algorithm Simulation Finished");
-        builder.setMessage("Can we upload your result to the cloud?");
-
-        // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void uploadCurrentResultToCloud() {
-        Map<String, Object> mapAsMap = graphToDocument(this.tryAlgorithmGraph);
-        db.collection("results")
-                .add(mapAsMap)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("-I-", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        Toast.makeText(getApplicationContext(),
-                                "Your result was uploaded successfully", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.w("-E-", "Error occurred. Result upload failed", e);
                     }
                 });
     }
