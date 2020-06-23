@@ -127,6 +127,19 @@ public class Wrapper extends Thread implements Handler.Callback {
         return true;
     }
 
+    /*
+    this function can only return 1,2,3.
+    1 - means that the robot needs to make a right turn
+    2 - means that the robot needs to make a 180 turn
+    3 - means that the robot needs to make a left turn
+     */
+    private int RotateToDirectionHelper(int n, int m){
+        int ret = (m-n)%4;
+        if (ret < 0){
+            ret +=4;
+        }
+        return ret;
+    }
     // n is the direction (is enum)
     private void RotateToDirection(int n){
         if (cur_direction == n){
@@ -138,54 +151,14 @@ public class Wrapper extends Thread implements Handler.Callback {
         //  ==============   and then busy-wait until the robot finished the move  ===========
 
         boolean res = true;
-
-        if (cur_direction == Direction.Up){
-            if (n == Direction.Left){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
-            }
-            if (n == Direction.Right){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-            if (n == Direction.Down){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-        }
-        if (cur_direction == Direction.Left){
-            if (n == Direction.Down){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
-            }
-            if (n == Direction.Up){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-            if (n == Direction.Right){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-        }
-        if (cur_direction == Direction.Down){
-            if (n == Direction.Right){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
-            }
-            if (n == Direction.Left){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-            if (n == Direction.Up){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-        }
-        if (cur_direction == Direction.Right){
-            if (n == Direction.Up){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
-            }
-            if (n == Direction.Down){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
-            if (n == Direction.Left){
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-                res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
-            }
+        int rotateHelper = RotateToDirectionHelper(cur_direction,n);
+        if (rotateHelper == Direction.Left) {
+            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_LEFT);
+        } else if (rotateHelper == Direction.Right) {
+            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
+        } else {
+            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
+            res &= myRobot.doCommand(SimulationActivity.Commands.TURN_90_RIGHT);
         }
         if (!res){
             Log.e("-E-", "Wrapper.RotateToDirection(): something about the vehicle is horribly wrong");
