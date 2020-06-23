@@ -140,7 +140,7 @@ public class Graph {
     {
         // Mark the current node as visited
         // and print it
-        int s = x * rows + y;
+        int s = x * columns + y;
         visited[s] = true;
         MoveToTarget(x, y);
         if (data[x][y].equals("X"))
@@ -170,7 +170,7 @@ public class Graph {
 
     public void BFS(int x,  int y, Graph graph)
     {
-        int s = x * rows + y;
+        int s = x * columns + y;
         // Mark all the vertices as not visited(By default
         // set as false)
         boolean visited[] = new boolean[columns * rows];
