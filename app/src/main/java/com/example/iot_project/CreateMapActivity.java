@@ -68,7 +68,7 @@ public class CreateMapActivity extends AppCompatActivity {
                 mapDescription[i][j] = "O";
             }
         }
-        StaticVars.grid = new Graph(StaticVars.numRows,  StaticVars.numCols, mapDescription, null).PrintGraph();
+        StaticVars.grid = new Graph(StaticVars.numCols,StaticVars.numRows ,mapDescription, null).PrintGraph();
     }
 
     private void setDefaultValues(){
