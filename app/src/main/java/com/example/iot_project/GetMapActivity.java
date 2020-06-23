@@ -103,7 +103,7 @@ public class GetMapActivity extends AppCompatActivity {
         }
         StaticVars.numRows = rowsNum;
         StaticVars.numCols = colsNum;
-        StaticVars.grid = new Graph(StaticVars.numRows,  StaticVars.numCols, mapDescription, null).PrintGraph();
+        StaticVars.grid = new Graph(StaticVars.numCols,StaticVars.numRows, mapDescription, null).PrintGraph();
     }
 
     private void getSomeMap() {
