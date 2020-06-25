@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.example.iot_project.StaticVars;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 public class ChooseParamsActivity extends AppCompatActivity {
 
@@ -19,7 +19,7 @@ public class ChooseParamsActivity extends AppCompatActivity {
     EditText startColText;
     EditText finishRowText;
     EditText finishColText;
-    EditText chooseAlgoText;
+    RadioGroup chooseAlgoGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class ChooseParamsActivity extends AppCompatActivity {
         startColText = (EditText) findViewById(R.id.choose_start_col);
         finishRowText = (EditText) findViewById(R.id.choose_finish_row);
         finishColText = (EditText) findViewById(R.id.choose_finish_col);
-        chooseAlgoText = (EditText) findViewById(R.id.choose_algo);
+        chooseAlgoGroup = (RadioGroup) findViewById(R.id.algoBtnGrp);
 
         startRowText.setSelection(0,StaticVars.numRows - 1);
         startColText.setSelection(0,StaticVars.numCols - 1);
@@ -80,14 +80,20 @@ public class ChooseParamsActivity extends AppCompatActivity {
         StaticVars.finishCol = finishCol;
 
         // algorithm
-        StaticVars.algo = chooseAlgoText.getText().toString();
+        RadioButton checkedRadioButton = (RadioButton) findViewById(chooseAlgoGroup.getCheckedRadioButtonId());
+        if (checkedRadioButton == null){
+            StaticVars.algo="BFS";
+        }
+        else {
+            StaticVars.algo = checkedRadioButton.getText().toString();
+        }
     }
 
     private void setDefaultParams(){
         startRowText.setText("0");
         startColText.setText("0");
-        finishRowText.setText("4");
-        finishColText.setText("4");
-        chooseAlgoText.setText("BFS");
+        finishRowText.setText(String.valueOf(StaticVars.numRows-1));
+        finishColText.setText(String.valueOf(StaticVars.numCols-1));
+        chooseAlgoGroup.check(R.id.bfsBtn);
     }
 }
