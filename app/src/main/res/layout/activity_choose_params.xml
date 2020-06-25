@@ -75,20 +75,6 @@
         app:layout_constraintVertical_bias="0.6"
         app:layout_constraintHorizontal_bias="0.5" />
 
-    <EditText
-        android:id="@+id/choose_algo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textLongMessage"
-        android:text="choose an algorithm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75"
-        app:layout_constraintHorizontal_bias="0.5" />
-
     <Button
         android:id="@+id/button_choose_default_params"
         android:layout_width="wrap_content"
@@ -114,5 +100,40 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.85"
         app:layout_constraintHorizontal_bias="0.75" />
+
+    <RadioGroup
+        android:id="@+id/algoBtnGrp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/button_choose_default_params"
+        app:layout_constraintEnd_toEndOf="@+id/button_choose_params_continue"
+        app:layout_constraintStart_toStartOf="@+id/button_choose_default_params"
+        app:layout_constraintTop_toBottomOf="@+id/choose_finish_col"
+        app:layout_constraintVertical_bias="0.13999999">
+
+        <RadioButton
+            android:id="@+id/bfsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BFS" />
+
+        <RadioButton
+            android:id="@+id/dfsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="DFS" />
+
+        <RadioButton
+            android:id="@+id/astarBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="A*"
+            tools:text="A*" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
