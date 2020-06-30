@@ -72,7 +72,7 @@ public class CreateMapActivity extends AppCompatActivity {
     }
 
     private void setDefaultValues(){
-        numRowsText.setText("5");
-        numColsText.setText("5");
+        numRowsText.setText("3");
+        numColsText.setText("2");
     }
 }
