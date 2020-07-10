@@ -225,6 +225,10 @@ public class Wrapper extends Thread implements Handler.Callback {
                 Log.w("-E-", "Wrapper.StartAlgo(): chosen " + StaticVars.algo);
                 graph.DFS(StaticVars.startRow, StaticVars.startCol, graph);
                 break;
+            case "A*":
+                Log.w("-E-", "Wrapper.StartAlgo(): chosen " + StaticVars.algo);
+                graph.ASTAR(StaticVars.startRow, StaticVars.startCol, graph);
+                break;
             default:
                 Log.w("-E-", "Wrapper.StartAlgo(): invalid algorithm - " + StaticVars.algo);
                 throw new Exception("No Algo");
