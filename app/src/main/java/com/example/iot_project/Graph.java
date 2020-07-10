@@ -132,6 +132,9 @@ public class Graph {
     public int cost[];
 
     public void ASTAR(int x ,int y, Graph graph){
+
+        Log.w("-I-", "Graph.ASTAR: starting to run..");
+
         int s = x * columns + y;
         // Mark all the vertices as not visited(By default
         // set as false)
@@ -163,8 +166,16 @@ public class Graph {
 
         while (queue.size() != 0)
         {
+            Iterator<Integer> iter = queue.iterator();
+            while (iter.hasNext()){
+                int mapIndex = iter.next();
+                Log.e("-DD-", "index " + mapIndex + "  eval = " + evaluationFunction(mapIndex));
+            }
+            // re-organize the queue...?
+
             // Dequeue a vertex from queue and print it
             s = queue.poll();
+            Log.e("-DD-", "index received from the queue: " + s);
             if (StaticVars.hasReachTarget)
             {
                 return;
@@ -186,10 +197,10 @@ public class Graph {
             while (i.hasNext())
             {
                 int n = i.next();
-                if (!closed[n])
+                if (!closed[n] && !queue.contains(n))
                 {
-                    queue.add(n);
                     cost[n]=cost[s]+1;
+                    queue.add(n);
                 }
                 StaticVars.grid = PrintGraph();
                 StaticVars.printStatusToLog();
