@@ -4,8 +4,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Graph {
     private int columns;
@@ -120,6 +127,86 @@ public class Graph {
         obstacleHandle = true;
         data[row][col] = "X";
         RemoveAdjacencies(row, col);
+    }
+
+    public int cost[];
+
+    public void ASTAR(int x ,int y, Graph graph){
+        int s = x * columns + y;
+        // Mark all the vertices as not visited(By default
+        // set as false)
+        boolean closed[] = new boolean[columns * rows];
+        for (int i = 0; i < columns * rows; i++)
+        {
+            closed[i] = false;
+        }
+        cost = new int[columns * rows];
+        for (int j = 0; j < columns * rows; j++)
+        {
+            cost[j] = 0;
+        }
+
+        // Create a priority queue for BFS
+        //PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>(11, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return evaluationFunction(o1)-evaluationFunction(o2);
+            }
+        });
+
+        // Mark the current node as visited and enqueue it
+        closed[s] = true;
+        data[x][y] = "V";
+        queue.addAll(adj[s]);
+        UpdateCurrentLocation(x, y);
+
+        while (queue.size() != 0)
+        {
+            // Dequeue a vertex from queue and print it
+            s = queue.poll();
+            if (StaticVars.hasReachTarget)
+            {
+                return;
+            }
+            Pair<Integer,Integer> current = numberToCordMap.get(s);
+            Integer cur_x = current.first;
+            Integer cur_y = current.second;
+            MoveToTarget(cur_x, cur_y);
+            if (!(data[cur_x][cur_y].equals("X")))
+            {
+                data[cur_x][cur_y] = "V";
+            }
+            closed[s] = true;
+
+            // Get all adjacent vertices of the dequeued vertex s
+            // If a adjacent has not been visited, then mark it
+            // visited and enqueue it
+            Iterator<Integer> i = adj[s].listIterator();
+            while (i.hasNext())
+            {
+                int n = i.next();
+                if (!closed[n])
+                {
+                    queue.add(n);
+                    cost[n]=cost[s]+1;
+                }
+                StaticVars.grid = PrintGraph();
+                StaticVars.printStatusToLog();
+            }
+        }
+    }
+
+    private int evaluationFunction(int index){
+        Pair<Integer,Integer> current = numberToCordMap.get(index);
+        int score=0;
+        score+=ManhattanHeuristic(current.first,current.second);
+        score+=cost[index];
+        return score;
+    }
+
+    private int ManhattanHeuristic(Integer row, Integer col) {
+        return Math.abs(row-StaticVars.finishRow) + Math.abs(col-StaticVars.finishCol);
     }
 
     public void DFS(int x,int y, Graph graph)
