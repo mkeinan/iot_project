@@ -284,6 +284,22 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
             Toast.makeText(getApplicationContext(), "handleMessage(): " + bundle.getString("toast"), Toast.LENGTH_LONG).show();
             return true;
         }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateDebugInfo();
+                updateMap();
+                checkSimulationStatus();
+            }
+        }, 2000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateDebugInfo();
+                updateMap();
+                checkSimulationStatus();
+            }
+        }, 4000);
         return false;
     }
 
