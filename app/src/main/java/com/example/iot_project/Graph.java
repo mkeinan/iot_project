@@ -210,10 +210,11 @@ public class Graph {
 
     private int evaluationFunction(int index){
         Pair<Integer,Integer> current = numberToCordMap.get(index);
-        int score=0;
-        score+=ManhattanHeuristic(current.first,current.second);
-        score+=cost[index];
-        return score;
+        int heuristicScore=0;
+
+        heuristicScore+=ManhattanHeuristic(current.first,current.second);
+
+        return (cost[index]/2) + (heuristicScore/2);
     }
 
     private int ManhattanHeuristic(Integer row, Integer col) {
