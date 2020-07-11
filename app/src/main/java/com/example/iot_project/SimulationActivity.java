@@ -115,6 +115,7 @@ public class SimulationActivity extends AppCompatActivity implements Handler.Cal
         backToMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StaticVars.resetStatus();
                 Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mainIntent);
                 finish();
