@@ -212,7 +212,7 @@ public class Graph {
         Pair<Integer,Integer> current = numberToCordMap.get(index);
         int heuristicScore=0;
 
-        heuristicScore+=ManhattanHeuristic(current.first,current.second);
+        heuristicScore+= 2 * ManhattanHeuristic(current.first,current.second);
 
         return (cost[index]/2) + (heuristicScore/2);
     }
