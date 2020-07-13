@@ -214,7 +214,7 @@ public class Graph {
 
         heuristicScore+=ManhattanHeuristic(current.first,current.second);
 
-        return (cost[index]/2) + heuristicScore;
+        return (cost[index]/2) + (heuristicScore/2);
     }
 
     private int ManhattanHeuristic(Integer row, Integer col) {
@@ -480,4 +480,3 @@ public class Graph {
         StaticVars.curCol = y;
     }
 }
-
